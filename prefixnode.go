@@ -60,6 +60,7 @@ func (n *Node) Iterate(fn func(n *Node)) {
 
 func (n *Node) GetValue() interface{} { return n.value }
 func (n *Node) GetPath() string       { return n.path }
+func (n *Node) GetType() NodeType     { return n.typ }
 
 // Remove removes the given path from the tree and return the value.
 func (n *Node) Remove(path string) (value interface{}) {
