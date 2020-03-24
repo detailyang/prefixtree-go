@@ -48,7 +48,7 @@ func (t *SafePrefixTree) Add(path string, value interface{}) {
 func (t *SafePrefixTree) String() string {
 	t.RLock()
 	s := t.n.String()
-	t.Unlock()
+	t.RUnlock()
 	return s
 }
 
