@@ -25,6 +25,20 @@ func (n NodeType) String() string {
 	}
 }
 
+// NodeValue represents the value with original path.
+type NodeValue struct {
+	path  string
+	value interface{}
+}
+
+// NewNodeValue creates a new NodeValue.
+func NewNodeValue(path string, value interface{}) *NodeValue {
+	return &NodeValue{
+		path:  path,
+		value: value,
+	}
+}
+
 // Node represents a leaf node.
 type Node struct {
 	typ      NodeType
