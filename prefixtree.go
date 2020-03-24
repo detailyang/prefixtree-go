@@ -15,6 +15,12 @@ func NewSafePrefixTree() *SafePrefixTree {
 	}
 }
 
+func (n *SafePrefixTree) Iterate(fn func(n *Node)) {
+	n.RLock()
+	Iterate(n.n, fn)
+	n.RUnlock()
+}
+
 // Remove removes the given path from the tree.
 func (t *SafePrefixTree) Remove(path string) (value interface{}) {
 	t.Lock()
@@ -56,6 +62,10 @@ func NewPrefixTree() *PrefixTree {
 	return &PrefixTree{
 		n: NewNode(),
 	}
+}
+
+func (n *PrefixTree) Iterate(fn func(n *Node)) {
+	n.n.Iterate(fn)
 }
 
 // Remove removes the given path from the tree.

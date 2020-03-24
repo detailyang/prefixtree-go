@@ -21,6 +21,14 @@ func longestCommonPrefix(a, b string) int {
 	return i
 }
 
+func Iterate(n *Node, fn func(n *Node)) {
+	for _, child := range n.children {
+		Iterate(child, fn)
+	}
+
+	fn(n)
+}
+
 func PPrint(w io.Writer, n *Node, prefix string) {
 	fmt.Fprintf(w, " %03d %s%s[%d] %s %v \r\n", n.priority, prefix,
 		n.path, len(n.children), n.typ, n.value)

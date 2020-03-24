@@ -57,4 +57,8 @@ func TestPathPrefix(t *testing.T) {
 	pn.Remove("/1/1")
 	pn.Cleanup()
 	fmt.Println(pn.String())
+
+	pn.Iterate(func(n *Node) {
+		fmt.Println("-", n.GetPath(), n.GetValue())
+	})
 }
