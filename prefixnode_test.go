@@ -7,7 +7,20 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestPathPrefixInsertDuplicated(t *testing.T) {
+func TestPathPrefixInsertDuplicatedAdd(t *testing.T) {
+	pn := NewNode()
+	pn.Add("/1", 1)
+	pn.Add("/1", 2)
+
+	count := 0
+	pn.Iterate(func(n *Node) {
+		count++
+		require.Equal(t, 2, n.value)
+	})
+	require.Equal(t, 1, count)
+}
+
+func TestPathPrefixInsertDuplicatedInsert(t *testing.T) {
 	pn := NewNode()
 	pn.insert("/1", 1)
 	pn.insert("/1", 2)
