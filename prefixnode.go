@@ -43,6 +43,7 @@ func NewNodeValue(path string, value interface{}) *NodeValue {
 type Node struct {
 	typ      NodeType
 	path     string
+	tmp      []byte
 	indices  []byte
 	value    interface{}
 	priority uint32
@@ -173,8 +174,6 @@ walk:
 			n.indices = []byte{n.path[i]}
 			n.path = n.path[:i]
 			n.value = nil
-		} else {
-			n.typ = RootNodeType
 		}
 
 		if i < len(path) {
@@ -188,6 +187,8 @@ walk:
 				continue walk
 			}
 
+			// otherwise insert it
+
 			// []byte for proper unicode char conversion, see #65
 			n.indices = append(n.indices, idxc)
 			child := &Node{}
@@ -198,6 +199,7 @@ walk:
 			return
 		}
 
+		n.typ = RootNodeType
 		n.value = value
 		return
 	}
@@ -205,23 +207,31 @@ walk:
 
 // Increments priority of the given child and reorders if necessary
 func (n *Node) incrementChildPrio(pos int) int {
-	cs := n.children
-	cs[pos].priority++
-	prio := cs[pos].priority
+	n.children[pos].priority++
+	prio := n.children[pos].priority
 
-	// Adjust position (move to front)
+	// adjust position (move to front)
 	newPos := pos
-	for ; newPos > 0 && cs[newPos-1].priority < prio; newPos-- {
-		// Swap node positions
-		cs[newPos-1], cs[newPos] = cs[newPos], cs[newPos-1]
+	for newPos > 0 && n.children[newPos-1].priority < prio {
+		// swap node positions
+		tmpN := n.children[newPos-1]
+		n.children[newPos-1] = n.children[newPos]
+		n.children[newPos] = tmpN
+
+		newPos--
 	}
 
-	// Build new index char string
+	// build new index char string
 	if newPos != pos {
-		n.indices = append(n.indices[:newPos],
-			n.indices[pos:pos+1]...)
-		n.indices = append(n.indices, n.indices[newPos:pos]...)
-		n.indices = append(n.indices, n.indices[pos+1:]...)
+		a := n.indices[:newPos]
+		b := n.indices[pos : pos+1]
+		c := n.indices[newPos:pos]
+		d := n.indices[pos+1:]
+		n.tmp = append(n.tmp[:0], a...)
+		n.tmp = append(n.tmp, b...)
+		n.tmp = append(n.tmp, c...)
+		n.tmp = append(n.tmp, d...)
+		n.indices = append(n.indices[:0], n.tmp...)
 	}
 
 	return newPos

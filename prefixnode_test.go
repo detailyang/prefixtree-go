@@ -7,6 +7,25 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestSafePathPrefixInsertDuplicated(t *testing.T) {
+	pn := NewSafePrefixTree()
+	for _, i := range []string{
+		"/helloworld.Greeter",
+		"/com.a.b.c.d.helloworld.Greeter",
+		"/com.1.2.3.4.tripleservice.Greeter",
+		"/helloworld.Greeter",
+	} {
+		pn.Add(i, i)
+	}
+	count := 0
+	pn.Iterate(func(n *Node) {
+		if n.GetType() == RootNodeType {
+			count++
+		}
+	})
+	require.Equal(t, 3, count)
+}
+
 func TestSafePathPrefixInsertLeaf(t *testing.T) {
 	pn := NewSafePrefixTree()
 	pn.Add("/helloworld.Greeter", 1)
