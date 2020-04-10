@@ -173,6 +173,8 @@ walk:
 			n.indices = []byte{n.path[i]}
 			n.path = n.path[:i]
 			n.value = nil
+		} else {
+			n.typ = RootNodeType
 		}
 
 		if i < len(path) {
