@@ -7,6 +7,19 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestSafePathPrefixInsertDuplicatedAdd(t *testing.T) {
+	pn := NewSafePrefixTree()
+	pn.Add("/com.a.b.c.helloworld.Greeter", 1)
+	pn.Add("/com.fliggy.fcecore.tripleservice.Greeter", 2)
+	pn.Add("/helloworld.Gretter", 3)
+
+	pn.Iterate(func(n *Node) {
+		if n.GetPath() == "com." {
+			require.Equal(t, LeafNodeType, n.GetType())
+		}
+	})
+}
+
 func TestPathPrefixInsertDuplicatedAdd(t *testing.T) {
 	pn := NewNode()
 	pn.Add("/1", 1)

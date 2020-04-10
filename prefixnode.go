@@ -162,7 +162,7 @@ walk:
 		if i < len(n.path) {
 			child := &Node{
 				path:     n.path[i:],
-				typ:      RootNodeType,
+				typ:      n.typ,
 				indices:  n.indices,
 				children: n.children,
 				value:    n.value,
